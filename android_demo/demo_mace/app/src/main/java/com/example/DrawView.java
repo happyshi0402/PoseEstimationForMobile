@@ -24,6 +24,7 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 
+import java.lang.Math;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 
@@ -115,6 +116,25 @@ public class DrawView extends View {
         requestLayout();
     }
 
+   public double angle(PointF pt1, PointF pt2, PointF pt3)
+    {
+        float ang;
+        double dx1 = pt2.x - pt3.x;
+        double dy1 = pt2.y - pt3.y;
+        double dx2 = pt1.x - pt3.x;
+        double dy2 = pt1.y - pt3.y;
+        double dx3 = pt1.x - pt2.x;
+        double dy3 = pt1.y - pt2.y;
+        float a = (float)Math.sqrt(dx1 * dx1 + dy1 * dy1);
+        float b = (float)Math.sqrt(dx2 * dx2 + dy2 * dy2);
+        float c = (float)Math.sqrt(dx3 * dx3 + dy3 * dy3);
+        if (c == 0) return -1;
+        ang = (float)Math.toDegrees(Math.acos((a * a - b*b - c*c) / (-2*b*c)));
+        return ang;
+//        double angle_line = (dx1*dx2 + dy1 * dy2) / Math.sqrt((dx1*dx1 + dy1 * dy1)*(dx2*dx2 + dy2 * dy2) + 1e-10);
+//        return Math.acos(angle_line) * 180 / 3.141592653;
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -196,6 +216,14 @@ public class DrawView extends View {
 
         //9-10
         canvas.drawLine(p9.x, p9.y, p10.x, p10.y, mPaint);
+
+        mPaint.setColor(Color.parseColor("#ef0fff"));
+        mPaint.setTextAlign(Paint.Align.LEFT);
+        mPaint.setTextSize(18);
+        canvas.drawText("AngleRight=" + angle(p9,p8,p10)  , p9.x - 100, p9.y + 50, mPaint);
+        mPaint.setColor(Color.parseColor("#1473ff"));
+        mPaint.setTextAlign(Paint.Align.RIGHT);
+        canvas.drawText("AngleLeft=" + angle(p12,p11,p13)  , p12.x - 100, p12.y + 50, mPaint);
     }
 
     @Override
